@@ -9,6 +9,7 @@ import sys
 #rules can be much more complicated as shown
 class Mirror(object):
     def __init__(self, symbol):
+        self.symbol = symbol
         if symbol == '/':
             self.rule = {(1, 0) : (0, 1),    #East to North
                          (0, -1) : (-1, 0),  #South to West
@@ -84,6 +85,24 @@ class Laser(object):
             newDir = mr.reflect(direction)
         #recursive call
         self.move(newPos, newDir)
+    
+    def printLaserMaze(self):
+        for x in range(self.maze.x):
+            print("---", end="")
+        print("\n")
+        for y in range(self.maze.y - 1, -1 , -1):
+            for x in range(self.maze.x):
+                if (x, y) in self.maze.mirrors:
+                    print(" " + self.maze.mirrors[(x, y)].symbol + " ", end="")
+                elif (x, y) in self.path:
+                    print(" * ", end="")
+                else:
+                    print("   ", end="")
+            print("\n")
+        for x in range(self.maze.x):
+            print("---", end="")
+        print("\n")
+                
 
 #read a txt file 
 #output a laser object
@@ -119,6 +138,7 @@ def readLaserMaze(filePath):
 def writeFile(laser, filePath):
     fp = open(filePath, "w")
     path = laser.getPath()
+    laser.printLaserMaze()    
     if path[-1] != -1:
         fp.write("-1")
     else:
